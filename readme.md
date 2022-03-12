@@ -13,56 +13,56 @@ Files to be modified are provided. Push them to MASTER node using scp -r (folder
 
 
 **CHANGE HOSTNAME**
-
+```
 hostnamectl set-hostname master
 hostnamectl set-hostname slave1 (for slave node)
 hostnamectl set-hostname slave2 (for slave node)
 
-
+```
 **CONFIGURE FIREWALL ON MASTER AND SLAVE**
-
+```
 service firewalld stop
 
-
+```
 **DEFINE CLUSTER HOSTS ON MASTER**
-
+```
 vim /etc/hosts
 
 X.X.X.X master
 Y.Y.Y.Y slave1
 Z.Z.Z.Z slave2
 
-
+```
 **CREATE KEYLESS SSH CONNECTION ON MASTER**
-
+```
 ssh-keygen -t rsa
 ssh-copy-id -i master
 ssh-copy-id -i slave1
 ssh-copy-id -i slave2
 
-
+```
 **PUSH HOST FILE FROM MASTER TO SLAVE**
-
+```
 scp /etc/hosts slave1:/etc/
 scp /etc/hosts slave2:/etc/
 
-
+```
 **CREATE KEYLESS SSH CONNECTION ON SLAVE**
-
+```
 ssh-keygen -t rsa
 ssh-copy-id -i master
 ssh-copy-id -i slave1
 ssh-copy-id -i slave2
 
-
+```
 **PUSH PYTHON SETUP FROM MASTER TO SLAVE**
-
+```
 scp Python-3.8.2.tgz zlib-devel-1.2.7-18.el7.x86_64.rpm slave1:/root/
 scp Python-3.8.2.tgz zlib-devel-1.2.7-18.el7.x86_64.rpm slave2:/root/
 
-
+```
 **INSTALL UPGRADE PYTHON ON MASTER AND SLAVE**
-
+```
 yum install zlib-devel-1.2.7-18.el7.x86_64.rpm -y
 tar -xvf Python-3.8.2.tgz
 cd Python-3.8.2/
@@ -71,19 +71,19 @@ make
 make install
 cd
 
-
+```
 
 
 ### Hadoop Setup ###
 
 
 **EXTRACT HADOOP**
-
+```
 tar -xvf hadoop-3.3.2.tar.gz
 
-
+```
 **SET ENVIRONMENT**
-
+```
 vim /etc/profile
 
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
@@ -102,9 +102,9 @@ export PATH JAVA_HOME HADOOP_HOME
 
 source \~/.bashrc
 
-
+```
 **EDIT CONFIGURATION FILE**
-
+```
 vim $HADOOP_HOME/etc/hadoop/core-site.xml
 
 <configuration>
@@ -225,25 +225,27 @@ export HDFS_SECONDARYNAMENODE_USER=root
 export YARN_RESOURCEMANAGER_USER=root
 export YARN_NODEMANAGER_USER=root
 
-
+```
 **DISTRIBUTE HADOOP**
-
+```
 scp -r hadoop-3.3.2 slave1:/root/
 scp -r hadoop-3.3.2 slave2:/root/
 
-
+```
 **PUSH ENVIRONMENT FOR SLAVE**
-
+```
 scp /etc/profile slave1:/etc/
 scp /etc/profile slave2:/etc/
 source /etc/profile (run this on slave)
 
-
+```
 **FORMAT NAMENODE**
+```
 hdfs namenode -format
 
-
+```
 **START HADOOP CLUSTER**
+```
 $HADOOP_HOME/sbin/start-all.sh
 
 master:9870 (dashboard)
@@ -251,18 +253,18 @@ master:8088/cluster (yarn)
 
 hdfs dfsadmin -report (check health status)
 
-
+```
 
 
 ### Spark Setup ###
 
 **EXTRACT SPARK**
-
+```
 tar -xvf spark-3.2.1-bin-hadoop3.2.tgz
 
-
+```
 **ADD TO PATH**
-
+```
 vim /etc/profile
 
 export SPARK_HOME=/root/spark-3.2.1-bin-hadoop3.2
@@ -270,8 +272,9 @@ export PATH=$PATH:$SPARK_HOME:/bin:$SPARK_HOME:/sbin
 
 source /etc/profile
 
+```
 **EDIT SPARK TEMPLATE**
-
+```
 vim spark-3.2.1-bin-hadoop3.2/conf/spark-env.sh
 
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
@@ -285,70 +288,70 @@ localhost
 slave1
 slave2
 
-
+```
 **DISTRIBUTE SPARK**
-
+```
 scp -r spark-3.2.1-bin-hadoop3.2 slave1:/root/
 scp -r spark-3.2.1-bin-hadoop3.2 slave2:/root/
 
-
+```
 **PUSH ENVIRONMENT FOR SLAVE**
-
+```
 scp /etc/profile slave1:/etc/
 scp /etc/profile slave2:/etc/
 source /etc/profile (run this on slave)
 
-
+```
 **START SPARK**
-
+```
 $SPARK_HOME/sbin/start-all.sh
 
 master:8080 (spark)
 
-
+```
 
 
 ## CLIENT CONFIGURATION ##
 
 
 **CHANGE HOSTNAME**
-
+```
 hostnamectl set-hostname client
 
-
+```
 **CONFIGURE FIREWALL**
-
+```
 service firewalld stop
 
-
+```
 **ADD CLIENT ON MASTER**
-
+```
 vim /etc/hosts
 
 A.A.A.A client
 
-
+```
 **CREATE KEYLESS SSH CONNECTION ON MASTER**
-
+```
 ssh-copy-id -i client
 
-
+```
 **ADD MASTER ON CLIENT**
-
+```
 vim /etc/hosts
 
 X.X.X.X master
 
-
+```
 **CREATE KEYLESS SSH CONNECTION ON CLIENT**
-
+```
 ssh-keygen -t rsa
 ssh-copy-id -i master
 ssh-copy-id -i client
 
-
+```
 **INSTALL UPGRADE PYTHON ON MASTER AND SLAVE**
-
+```
 yum install zlib-devel-1.2.7-18.el7.x86_64.rpm -y
 tar -xvf Python-3.8.2.tgz
 cd Python-3.8.2/
@@ -359,17 +362,20 @@ cd
 
 (OR U CAN USE ANACONDA)
 
-
+```
 **INSTALL PYSPARK**
+```
 pip3 install py4j-0.10.9.3-py2.py3-none-any.whl
 pip3 install pypandoc-1.7.2-py2.py3-none-any.whl
 pip3 install pyspark-3.2.1.tar.gz
 
-
+```
 **USING SPARK AND HDFS**
-
+```
 (putting files to hdfs)
 cat X.csv | ssh root@master "hdfs dfs -put - hdfs://master:9000/user/root/X.csv"
 
 (running spark script)
 spark-submit Y.py
+
+```
