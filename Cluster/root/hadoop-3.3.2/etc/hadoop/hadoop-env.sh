@@ -151,7 +151,7 @@ export HADOOP_OS_TYPE=${HADOOP_OS_TYPE:-$(uname -s)}
 # Enable optional, bundled Hadoop features
 # This is a comma delimited list.  It may NOT be overridden via .hadooprc
 # Entries may be added/removed as needed.
-# export HADOOP_OPTIONAL_TOOLS="hadoop-aws,hadoop-kafka,hadoop-aliyun,hadoop-openstack,hadoop-azure,hadoop-azure-datalake"
+# export HADOOP_OPTIONAL_TOOLS="hadoop-aliyun,hadoop-aws,hadoop-azure,hadoop-azure-datalake,hadoop-kafka,hadoop-openstack"
 
 ###
 # Options for remote shell connectivity
