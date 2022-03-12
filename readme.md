@@ -1,13 +1,12 @@
-Hadoop + Spark guide on Centos 7
+# Hadoop 3.3.2 + Spark 3.2.1 setup guide on Centos 7 #
 
 
-CLUSTER CONFIGURATION
-"""
+## CLUSTER CONFIGURATION ##
+***
 Files to be modified are provided. Push them to MASTER node using scp -r <folder> master:<dir>
-"""
+***
 
-
-# Initial Setup #
+### Initial Setup ###
 _______________________________________________________________________
 CHANGE HOSTNAME
 
@@ -22,11 +21,11 @@ _______________________________________________________________________
 DEFINE CLUSTER HOSTS ON MASTER
 
 vim /etc/hosts
-"""
+***
 X.X.X.X master
 Y.Y.Y.Y slave1
 Z.Z.Z.Z slave2
-"""
+***
 _______________________________________________________________________
 CREATE KEYLESS SSH CONNECTION ON MASTER
 
@@ -65,7 +64,7 @@ ______________________________________________________________________
 
 
 
-# Hadoop Setup #
+### Hadoop Setup ###
 ______________________________________________________________________
 EXTRACT HADOOP
 
@@ -74,37 +73,38 @@ ______________________________________________________________________
 SET ENVIRONMENT
 
 vim /etc/profile
-"""
+***
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 export PATH=$PATH:$JAVA_HOME/bin
 export HADOOP_HOME=/root/hadoop-3.3.2
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME:/sbin
-"""
+***
 source /etc/profile
 
 vim ~/.bashrc
-"""
+***
 HADOOP_HOME=/root/hadoop-3.3.2
 JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 PATH=$PATH:$HADOOP_PREFIX/bin
 export PATH JAVA_HOME HADOOP_HOME
-"""
+***
 source ~/.bashrc
 ______________________________________________________________________
 EDIT CONFIGURATION FILE
 
 vim $HADOOP_HOME/etc/hadoop/core-site.xml
-"""
+***
 <configuration>
      <property>
          <name>fs.defaultFS</name>
          <value>hdfs://master:9000</value>
      </property>
 </configuration>
-"""
+
+***
 
 vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml
-"""
+***
 <configuration>
    <property>
        <name>dfs.namenode.secondary.http-address</name>
@@ -133,10 +133,11 @@ vim $HADOOP_HOME/etc/hadoop/hdfs-site.xml
        <value>false</value>
    </property>
 </configuration>
-"""
+
+***
 
 vim $HADOOP_HOME/etc/hadoop/mapred-site.xml
-"""
+***
 <configuration>
    <property>
        <name>mapreduce.framework.name</name>
@@ -165,10 +166,11 @@ vim $HADOOP_HOME/etc/hadoop/mapred-site.xml
        </value>
    </property>
 </configuration>
-"""
+
+***
 
 vim $HADOOP_HOME/etc/hadoop/yarn-site.xml
-"""
+***
 <configuration>
    <property>
        <name>yarn.nodemanager.aux-services</name>
@@ -199,17 +201,18 @@ vim $HADOOP_HOME/etc/hadoop/yarn-site.xml
        <value>master:8088</value>
    </property>
 </configuration>
-"""
+
+***
 
 vim $HADOOP_HOME/etc/hadoop/workers
-"""
+***
 localhost
 slave1
 slave2
-"""
+***
 
 vim $HADOOP_HOME/etc/hadoop/hadoop-env.sh
-"""
+***
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 export HADOOP_HOME=/root/hadoop-3.3.2
 export HDFS_NAMENODE_USER=root
@@ -217,7 +220,7 @@ export HDFS_DATANODE_USER=root
 export HDFS_SECONDARYNAMENODE_USER=root
 export YARN_RESOURCEMANAGER_USER=root
 export YARN_NODEMANAGER_USER=root
-"""
+***
 ______________________________________________________________________
 DISTRIBUTE HADOOP
 
@@ -248,7 +251,7 @@ ______________________________________________________________________
 
 
 
-# Spark Setup #
+### Spark Setup ###
 ______________________________________________________________________
 EXTRACT SPARK
 
@@ -257,29 +260,29 @@ ______________________________________________________________________
 ADD TO PATH
 
 vim /etc/profile
-"""
+***
 export SPARK_HOME=/root/spark-3.2.1-bin-hadoop3.2
 export PATH=$PATH:$SPARK_HOME:/bin:$SPARK_HOME:/sbin
-"""
+***
 source /etc/profile
 ______________________________________________________________________
 EDIT SPARK TEMPLATE
 
 vim spark-3.2.1-bin-hadoop3.2/conf/spark-env.sh
-"""
+***
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 export HADOOP_CONF_DIR=/root/hadoop-3.3.1/etc/hadoop
 export SPARK_MASTER_HOST=master
 export SPARK_LOCAL_DIRS=/root/spark-3.2.1-bin-hadoop3.2
 
-"""
+***
 
 vim spark-3.2.1-bin-hadoop3.2/conf/workers
-"""
+***
 localhost
 slave1
 slave2
-"""
+***
 ______________________________________________________________________
 DISTRIBUTE SPARK
 
@@ -301,7 +304,7 @@ ______________________________________________________________________
 
 
 
-CLIENT CONFIGURATION
+## CLIENT CONFIGURATION ##
 
 
 
@@ -317,9 +320,9 @@ _______________________________________________________________________
 ADD CLIENT ON MASTER
 
 vim /etc/hosts
-"""
+***
 A.A.A.A client
-"""
+***
 _______________________________________________________________________
 CREATE KEYLESS SSH CONNECTION ON MASTER
 
@@ -328,9 +331,9 @@ _______________________________________________________________________
 ADD MASTER ON CLIENT
 
 vim /etc/hosts
-"""
+***
 X.X.X.X master
-"""
+***
 _______________________________________________________________________
 CREATE KEYLESS SSH CONNECTION ON CLIENT
 
